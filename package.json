@@ -1,0 +1,35 @@
+{
+  "name": "@qatonic/plugin-http",
+  "version": "0.0.2",
+  "description": "QA Tonic Plugin Http",
+  "main": "index.js",
+  "scripts": {
+    "lint": "node_modules/eslint/bin/eslint.js index.js src/**/*.js test/**/*.js",
+    "test": "npm run-script lint; mocha test --require chai/register-assert --reporter dot"
+  },
+  "author": {
+    "name": "George Suntres",
+    "email": "gsuntres@gmail.com"
+  },
+  "license": "MIT",
+  "files": [
+    "src",
+    "index.js"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:gsuntres/qatonic-plugin-http.git"
+  },
+  "dependencies": {
+    "@qatonic/core": "^0.0.1",
+    "lodash": "^4.17.11",
+    "set-cookie-parser": "^2.2.0",
+    "superagent": "^3.8.3"
+  },
+  "devDependencies": {
+    "chai": "4.1.2",
+    "eslint": "^5.15.3",
+    "mocha": "^5.2.0",
+    "mock-fs": "4.5.0"
+  }
+}
