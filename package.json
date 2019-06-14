@@ -22,14 +22,13 @@
   },
   "dependencies": {
     "@qatonic/core": "^0.0.1",
-    "lodash": "^4.17.11",
+    "debug": "^4.1.1",
     "set-cookie-parser": "^2.2.0",
     "superagent": "^3.8.3"
   },
   "devDependencies": {
     "chai": "4.1.2",
     "eslint": "^5.15.3",
-    "mocha": "^5.2.0",
-    "mock-fs": "4.5.0"
+    "mocha": "^5.2.0"
   }
 }
