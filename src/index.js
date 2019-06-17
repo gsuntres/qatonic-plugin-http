@@ -6,22 +6,27 @@ class Http {
 
   constructor() {
     this._headers = {}
+    this._rootUrl = 'http://localhost'
   }
 
-  get(url) {
-    return this._call('GET', url)
+  rootUrl(rootUrl) {
+    this._rootUrl = rootUrl
   }
 
-  post(url, payload) {
-    return this._call('POST', url, payload)
+  get(path) {
+    return this._call('GET', `${this._rootUrl}${path}`)
   }
 
-  put(url, payload) {
-    return this._call('PUT', url, payload)
+  post(path, payload) {
+    return this._call('POST', `${this._rootUrl}${path}`, payload)
   }
 
-  path(url, payload) {
-    return this._call('PATCH', url, payload)
+  put(path, payload) {
+    return this._call('PUT', `${this._rootUrl}${path}`, payload)
+  }
+
+  path(path, payload) {
+    return this._call('PATCH', `${this._rootUrl}${path}`, payload)
   }
 
   headers(headers = {}) {
