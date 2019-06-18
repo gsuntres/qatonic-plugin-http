@@ -7,7 +7,10 @@ class Http {
   constructor() {
     this._headers = {}
     this._rootUrl = 'http://localhost'
+
+    request.parse['text/html'] =  (res, cb) => res.on('data', (chunk) => cb(null, chunk))
   }
+
 
   rootUrl(rootUrl) {
     this._rootUrl = rootUrl
@@ -15,6 +18,10 @@ class Http {
 
   get(path) {
     return this._call('GET', `${this._rootUrl}${path}`)
+  }
+
+  opts(path) {
+    return this._call('OPTIONS', `${this._rootUrl}${path}`)
   }
 
   post(path, payload) {
@@ -25,12 +32,16 @@ class Http {
     return this._call('PUT', `${this._rootUrl}${path}`, payload)
   }
 
-  path(path, payload) {
+  delete(path) {
+    return this._call('DELETE', `${this._rootUrl}${path}`)
+  }
+
+  patch(path, payload) {
     return this._call('PATCH', `${this._rootUrl}${path}`, payload)
   }
 
   headers(headers = {}) {
-    this._headers = headers
+    this._headers = Object.assign({}, headers)
   }
 
   _call(method = 'GET', url, payload = null, headers = {}) {
@@ -48,6 +59,12 @@ class Http {
         if(err) {
           debug('There was a problem: ' + err.message)
         }
+
+        // debug('Req.Headers: ' + JSON.stringify(reqHeaders, null, 2))
+        // debug('Req.Payload: ' + JSON.stringify(payload, null, 2))
+        // debug('Res.Status: ' + res.status)
+        // debug('Res.Headers: ' + JSON.stringify(res.headers, null, 2))
+        // debug('Res.Body: ' + JSON.stringify(res.body, null, 2))
 
         let cookies
         try {
