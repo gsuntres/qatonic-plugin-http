@@ -60,11 +60,12 @@ class Http {
           debug('There was a problem: ' + err.message)
         }
 
-        debug('Req.Headers: ' + JSON.stringify(reqHeaders, null, 2))
-        debug('Req.Payload: ' + JSON.stringify(payload, null, 2))
-        debug('Res.Status: ' + res.status)
-        debug('Res.Headers: ' + JSON.stringify(res.headers, null, 2))
-        debug('Res.Body: ' + JSON.stringify(res.body, null, 2))
+        debug('Req.Headers: %O', reqHeaders)
+        debug('Req.Payload: %O', payload)
+        debug('---------------------------')
+        debug('Res.Status: %d', res.status)
+        debug('Res.Headers: %O', res.headers)
+        debug('Res.Body: %O', res.body)
 
         let cookies
         try {
