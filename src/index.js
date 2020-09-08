@@ -11,6 +11,10 @@ class Http {
     request.parse['text/html'] =  (res, cb) => {
       res.on('data', (chunk) => cb(null, chunk.toString()))
     }
+
+    request.parse['text/plain'] =  (res, cb) => {
+      res.on('data', (chunk) => cb(null, chunk.toString()))
+    }
   }
 
   rootUrl(rootUrl) {
