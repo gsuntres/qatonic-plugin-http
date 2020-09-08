@@ -8,9 +8,10 @@ class Http {
     this._headers = {}
     this._rootUrl = 'http://localhost'
 
-    request.parse['text/html'] =  (res, cb) => res.on('data', (chunk) => cb(null, chunk))
+    request.parse['text/html'] =  (res, cb) => {
+      res.on('data', (chunk) => cb(null, chunk.toString()))
+    }
   }
-
 
   rootUrl(rootUrl) {
     this._rootUrl = rootUrl
