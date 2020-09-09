@@ -9,11 +9,33 @@ class Http {
     this._rootUrl = 'http://localhost'
 
     request.parse['text/html'] =  (res, cb) => {
-      res.on('data', (chunk) => cb(null, chunk.toString()))
+      res.text = ''
+      res.setEncoding('utf-8')
+      res.on('data', chunk => {
+        res.text += chunk.toString()
+      });
+      res.on('end', () => {
+        try {
+          fn(null, res.text)
+        } catch (err) {
+          fn(err)
+        }
+      })
     }
 
-    request.parse['text/plain'] =  (res, cb) => {
-      res.on('data', (chunk) => cb(null, chunk.toString()))
+    request.parse['text/plain'] =  (res, fn) => {
+      res.text = ''
+      res.setEncoding('utf-8')
+      res.on('data', chunk => {
+        res.text += chunk
+      });
+      res.on('end', () => {
+        try {
+          fn(null, res.text)
+        } catch (err) {
+          fn(err)
+        }
+      })
     }
   }
 
@@ -29,8 +51,8 @@ class Http {
     return this._call('OPTIONS', `${this._rootUrl}${path}`)
   }
 
-  post(path, payload) {
-    return this._call('POST', `${this._rootUrl}${path}`, payload)
+  post(path, payload, type = 'json') {
+    return this._call('POST', `${this._rootUrl}${path}`, payload, type)
   }
 
   put(path, payload) {
@@ -49,45 +71,50 @@ class Http {
     this._headers = Object.assign({}, headers)
   }
 
-  _call(method = 'GET', url, payload = null, headers = {}) {
+  mergeHeaders(headers = {}) {
+    this._headers = Object.assign({}, this._headers, headers)
+  }
+
+  _call(method = 'GET', url, payload = null, type = 'json', headers = {}) {
     return new Promise((resolve) => {
-      debug(`[${method}] ${url}`)
+      debug(`[${method}]:[${type}] ${url}`)
 
-      const p = request(method, url).send(payload)
+      const reqHeaders = Object.assign({}, this._headers, headers)
+      debug('Req.Headers: %O', reqHeaders)
+      debug('Req.Payload: %O', payload)
 
-      const reqHeaders = Object.assign(this._headers, headers)
-      for(let key in reqHeaders) {
-        p.set(key, reqHeaders[key])
-      }
+      request(method, url)
+        .type(type)
+        .set(reqHeaders)
+        .send(payload)
+        .then((res, err) => {
+          debug('---------------------------')
+          debug('Res.Status: %d', res.status)
+          debug('Res.Headers: %O', res.headers)
+          debug('Res.Body: %O', res.body)
 
-      p.end((err, res) => {
-        if(err) {
-          debug('There was a problem: ' + err.message)
-        }
+          let cookies
+          try {
+            cookies = this._parseCookies(res)
+          } catch(err) {
+            debug(`Problem parsing cookies ${err.message}`)
+          }
 
-        debug('Req.Headers: %O', reqHeaders)
-        debug('Req.Payload: %O', payload)
-        debug('---------------------------')
-        debug('Res.Status: %d', res.status)
-        debug('Res.Headers: %O', res.headers)
-        debug('Res.Body: %O', res.body)
+          const out = {
+            status: res.status,
+            body: res.body,
+            headers: res.headers,
+            cookies
+          }
 
-        let cookies
-        try {
-          cookies = this._parseCookies(res)
-        } catch(err) {
-          debug(`Problem parsing cookies ${err.message}`)
-        }
+          resolve(out)
+        })
+        .catch((err) => {
+          debug('there was a problem: ' + err.message)
+          debug('response %O', err.response)
 
-        const out = {
-          status: res.status,
-          body: res.body,
-          headers: res.headers,
-          cookies
-        }
-
-        resolve(out)
-      })
+          resolve(err.response)
+        })
     })
   }
 
