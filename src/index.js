@@ -110,10 +110,14 @@ class Http {
           resolve(out)
         })
         .catch((err) => {
-          debug('there was a problem: ' + err.message)
-          debug('response %O', err.response)
+          debug('there was a problem: %d - %s', err.status, err.message)
+          // debug('response %O', err.response)
+          const out = { }
+          out.status = err.status
+          out.body = err.response.body
+          out.headers = err.response.headers
 
-          resolve(err.response)
+          resolve(out)
         })
     })
   }
