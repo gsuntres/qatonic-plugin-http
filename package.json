@@ -1,6 +1,6 @@
 {
   "name": "@qatonic/plugin-http",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "QA Tonic Plugin Http",
   "main": "index.js",
   "scripts": {
