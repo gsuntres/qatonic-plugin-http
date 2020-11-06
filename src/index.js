@@ -8,12 +8,12 @@ class Http {
     this._headers = {}
     this._rootUrl = 'http://localhost'
 
-    request.parse['text/html'] =  (res, cb) => {
+    request.parse['text/html'] =  (res, fn) => {
       res.text = ''
       res.setEncoding('utf-8')
       res.on('data', chunk => {
         res.text += chunk.toString()
-      });
+      })
       res.on('end', () => {
         try {
           fn(null, res.text)
@@ -28,7 +28,7 @@ class Http {
       res.setEncoding('utf-8')
       res.on('data', chunk => {
         res.text += chunk
-      });
+      })
       res.on('end', () => {
         try {
           fn(null, res.text)
@@ -87,7 +87,7 @@ class Http {
         .type(type)
         .set(reqHeaders)
         .send(payload)
-        .then((res, err) => {
+        .then((res) => {
           debug('---------------------------')
           debug('Res.Status: %d', res.status)
           debug('Res.Headers: %O', res.headers)
